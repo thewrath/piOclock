@@ -1,0 +1,12 @@
+{
+    "require": {
+        "amphp/amp": "^2.2",
+        "amphp/process": "^1.1",
+        "amphp/http-server": "^1.1",
+        "league/container": "^3.3",
+        "php-di/php-di": "^6.0",
+        "amphp/http-server-router": "^1.0",
+        "monolog/monolog": "^2.0",
+        "amphp/log": "^1.1"
+    }
+}
