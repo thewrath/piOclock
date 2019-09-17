@@ -5,4 +5,7 @@
 
 ## **V0.7b**  *Cogsworth prototype*
 
-## A connected clock made with a Raspberry and AmPHP  
+## A connected clock made with a Raspberry and AmPHP 
+
+##TODO 
+- Ajouter la gestion de erreurs 
