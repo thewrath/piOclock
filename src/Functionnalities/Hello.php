@@ -9,8 +9,11 @@ use Amp\Loop;
 
 use DI\Container;
 
-//Class used as a demo to build a functionnality 
-class HelloFunctionnality extends Functionnality
+/**
+ * HelloFunctionnality - demo functionnality 
+ * 
+ **/
+class Hello extends Functionnality
 {
 
     private $router;

@@ -2,7 +2,7 @@
 
 use DI\Container;
 
-class Functionnality
+abstract class Functionnality
 {
 
     protected $container;

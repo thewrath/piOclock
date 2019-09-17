@@ -3,7 +3,8 @@
 require_once 'vendor/autoload.php';
 require_once 'HttpServer.php';
 require_once 'Functionnalities/Functionnality.php';
-require_once 'Functionnalities/HelloFunctionnality.php';
+require_once 'Functionnalities/Hello.php';
+require_once 'Functionnalities/AdminPanel.php';
 
 use Amp\ByteStream\ResourceOutputStream;
 use Amp\Log\ConsoleFormatter;
@@ -18,10 +19,16 @@ use Monolog\Logger;
 class Kernel {
 
     private $container;
+    private $registredFunctionnalities;
     private $functionnalities;
 
     public function __construct()
     {
+        //All activated functionnalities
+        $this->registredFunctionnalities = [
+            Hello::class => [], 
+            AdminPanel::class => []
+        ];
         $this->functionnalities = array();
     }
 
@@ -36,13 +43,25 @@ class Kernel {
         $this->buildContainer();
         //Amp based http webserver with event loop
         $server =  new HttpServer($this->container);
-        $this->registerFunctionnality(new HelloFunctionnality($this->container));
+        //build all registred functionnalities 
+        $this->buildFunctionnalities();
+
         $server->run(function() {
             foreach($this->functionnalities as $functionnality)
             {
                 $functionnality->run();
             }
         });
+    }
+
+    /**
+     * reboot
+     * Used to reboot the kernel  
+     * @return void
+     */
+    public function reboot()
+    {
+        $this->boot();
     }
 
     /**
@@ -69,18 +88,29 @@ class Kernel {
     }
 
     /**
-     * reboot
-     * Used to reboot the kernel  
-     * @return void
+     * buildFunctionnalities 
+     * Used to create object of each class that are registred in the functionnalities array
+     * @return void 
      */
-    public function reboot()
+    private function buildFunctionnalities()
     {
-        $this->boot();
+        //Loop in registred functionnality and call 
+        foreach ($this->registredFunctionnalities as $functionnality => $args) {
+            $this->buildFunctionnality($functionnality, $args);
+        }
     }
 
-    public function registerFunctionnality(Functionnality $functionnality)
+    /**
+     * buildFunctionnality
+     * Used to build a functionnality   
+     * @return void
+     */
+    private function buildFunctionnality(string $functionnalityClass, $args)
     {
-        array_push($this->functionnalities, $functionnality);
+        //add container to args array 
+        array_unshift($args, $this->container);
+        //change to object creation using reflectionClass 
+        array_push($this->functionnalities, (new ReflectionClass($functionnalityClass))->newInstanceArgs($args));
     }
 }
 
